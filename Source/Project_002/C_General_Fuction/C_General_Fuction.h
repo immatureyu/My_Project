@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "..\Source\Project_002\Super_unit\Super_unit.h"
 #include "C_General_Fuction.generated.h"
 
 /**
@@ -68,12 +69,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Supply")
 		static void weapon_supply_cal(TArray<float>& out_temp_weapon_sup, TArray<int>& out_weapon_sup_result, TArray<float> temp_weapon_sup, TArray<float> weapon_sup_cost);
 
-	UFUNCTION(BlueprintPure, Category = "Supply")
+	UFUNCTION(BlueprintCallable, Category = "Supply")
 		static void vehicle_onlyself_supply_cal(bool& is_vehicle_sup_over, float& now_health, float& now_ERA_health, float& now_oil,
 			float& now_APS_number, float& now_smoke_number, TArray<float>& out_temp_sup_list_self, float health, float const_health,
 			float per_health_sup_time, float ERA_health, float const_ERA_health, float per_ERA_health_sup_time, float oil, float const_oil,
 			float per_10_oil_sup_time, float APS_num, float const_APS_num, float per_APS_sup_time, float smoke_num, float const_smoke_num, float per_smoke_sup_time,
 			TArray<float> temp_sup_list_self);
+
+	UFUNCTION(BlueprintCallable, Category = "Supply")
+		static void helo_onlyself_supply_cal(bool& is_helo_sup_over, float& now_health, float& now_oil,
+			float& now_hot_bait_number, TArray<float>& out_temp_sup_list_self, float health, float const_health, float per_health_sup_time, float oil, float const_oil,
+			float per_10_oil_sup_time, float hot_bait_num, float const_hot_bait_num, float per_hot_bait_sup_time, TArray<float> temp_sup_list_self);
 
 	UFUNCTION(BlueprintCallable, Category = "Supply")
 		static void vehicle_general_sup(float& out_property, float& temp_sup_list_increment, bool& is_property_sup_over, float property,
@@ -153,11 +159,20 @@ public:
 		static void helo_close_engine_decline_buoyancy(float& out_buoyancy, int in_index);
 
 	UFUNCTION(BlueprintPure, Category = "investigation_hide")
-		static void distance_sort_unit_list(TArray<APawn*>& out_sorted_array, TArray<APawn*> unit_list,FVector my_location);
+		static void distance_sort_unit_list(TArray<ASuper_unit*>& out_sorted_array, TArray<ASuper_unit*> unit_list,FVector self_location);
 
 	UFUNCTION(BlueprintCallable, Category = "FOV")
 		static void set_camera_FOV(float& out_FOV, int& aiming_multipiler, float now_FOV, TArray<float> FOV_list, bool is_add);
 
 	UFUNCTION(BlueprintPure, Category = "FOV")
 		static void get_now_aiming_multipiler(int& out_multipiler, float now_FOV);
+
+	UFUNCTION(BlueprintPure, Category = "Damage")
+		static void attacked_comp_to_location(int& attack_loaction, FString comp_name);
+
+	UFUNCTION(BlueprintPure, Category = "ATGM_check")
+		static void is_ATGM_FoF(bool& out_bool, FString ATGM_property);
+
+	UFUNCTION(BlueprintPure, Category = "AI_vehicle")
+		static float high_performance_AI_standby_CROWS_rotate(int total_index, int now_index, int stop_duration, float rotate_speed);
 };

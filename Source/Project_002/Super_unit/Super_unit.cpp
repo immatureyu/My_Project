@@ -32,3 +32,8 @@ void ASuper_unit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
+void ASuper_unit::set_tp_distance_for_sort(FVector location)
+{
+	tp_distance_for_sort = sqrt((my_location.X - location.X)* (my_location.X - location.X)+ (my_location.Y - location.Y)* 
+		(my_location.Y - location.Y)+ (my_location.Z - location.Z)* (my_location.Z - location.Z));
+}
