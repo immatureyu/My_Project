@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "SuperUnit.generated.h"
-#include "G:\code\ue4\Project_002\Source\Project_002\Public\Header.h"
+
 UCLASS()
 class PROJECT_002_API ASuperUnit : public APawn
 {
