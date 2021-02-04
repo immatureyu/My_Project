@@ -381,6 +381,33 @@ void UC_General_Fuction::vehicle_general_sup(float& out_property, float& temp_su
 	}
 }
 
+void UC_General_Fuction::helo_onlyself_supply_cal(bool& is_helo_sup_over, float& now_health, float& now_oil,
+	float& now_hot_bait_number, TArray<float>& out_temp_sup_list_self, float health, float const_health, float per_health_sup_time, float oil, float const_oil,
+	float per_10_oil_sup_time, float hot_bait_num, float const_hot_bait_num, float per_hot_bait_sup_time, TArray<float> temp_sup_list_self)
+{
+	TArray<float> property_now = { health,oil,hot_bait_num };
+	TArray<float> property_const = { const_health,const_oil,const_hot_bait_num };
+	TArray<float> property_sup_time = { per_health_sup_time,per_10_oil_sup_time,per_hot_bait_sup_time };
+	TArray<int> property_sup_multiplier = { 1,1,1 };
+	TArray<float> out_property = { now_health,now_oil,now_hot_bait_number };
+	out_temp_sup_list_self = temp_sup_list_self;
+
+	float tp_sup_incre = 0;
+	bool tp_is_sup_over = false;
+	is_helo_sup_over = true;
+
+	for (int i = 0; i < temp_sup_list_self.Num(); i++)
+	{
+		vehicle_general_sup(out_property[i], tp_sup_incre, tp_is_sup_over, property_now[i], property_const[i], property_sup_time[i], property_sup_multiplier[i], temp_sup_list_self, i);
+		out_temp_sup_list_self[i] += tp_sup_incre;
+		is_helo_sup_over = is_helo_sup_over && tp_sup_incre;
+	}
+
+	now_health = out_property[0];
+	now_oil = out_property[1];
+	now_hot_bait_number = out_property[2];
+}
+
 void UC_General_Fuction::Boardwalk_radius_cal(FVector& random_boardwalk, float speed, float boardwalk_radius, int range, float X_multi, float Y_multi, float Z_multi)
 {
 	float max_offset = boardwalk_radius / (range / (speed / 100));
@@ -447,14 +474,18 @@ bool UC_General_Fuction::is_in_same_camp(int self_camp, int other_camp)
 
 bool UC_General_Fuction::can_vehicle_load_soldier(int vehicle_type)
 {
-	if (vehicle_type == 1)
+	switch (vehicle_type)
 	{
+	case 2:
+		return true;
+	case 3:
+		return true;
+	case 4:
+		return true;
+	default:
 		return false;
 	}
-	else
-	{
-		return true;
-	}
+
 }
 
 bool UC_General_Fuction::can_get_on(int vehicle_type, int self_camp, int other_camp)
@@ -685,9 +716,13 @@ void UC_General_Fuction::helo_close_engine_decline_buoyancy(float& out_buoyancy,
 	out_buoyancy = (1000 - in_index) * 980;
 }
 
-void UC_General_Fuction::distance_sort_unit_list(TArray<APawn*>& out_sorted_array, TArray<APawn*> unit_list, FVector my_location)
+void UC_General_Fuction::distance_sort_unit_list(TArray<ASuper_unit*>& out_sorted_array, TArray<ASuper_unit*> unit_list, FVector self_location)
 {
-
+	for (int i = 0; i < unit_list.Num(); i++)
+	{
+		unit_list[i]->set_tp_distance_for_sort(self_location);
+	}
+	unit_list.Sort([](const ASuper_unit& a, const ASuper_unit& b) {return a.tp_distance_for_sort>b.tp_distance_for_sort; });
 }
 
 void UC_General_Fuction::set_camera_FOV(float& out_FOV, int& aiming_multipiler, float now_FOV, TArray<float> FOV_list, bool is_add)
@@ -715,4 +750,51 @@ void UC_General_Fuction::set_camera_FOV(float& out_FOV, int& aiming_multipiler, 
 void UC_General_Fuction::get_now_aiming_multipiler(int& out_multipiler, float now_FOV)
 {
 	out_multipiler = 90 / now_FOV;
+}
+
+void UC_General_Fuction::attacked_comp_to_location(int& attack_loaction, FString comp_name)
+{
+	FString tp_str = comp_name.Right(2);
+	TArray<FString> tp_array = UKismetStringLibrary::GetCharacterArrayFromString(tp_str);
+	attack_loaction = FCString::Atoi(*(tp_array[0]));
+}
+
+void UC_General_Fuction::is_ATGM_FoF(bool& out_bool, FString ATGM_property)
+{
+	TArray<FString> tp_array = UKismetStringLibrary::GetCharacterArrayFromString(ATGM_property);
+	out_bool = false;
+
+	for (int i = 0; i < tp_array.Num(); i++)
+	{
+		if (tp_array[i] == FString::FromInt(3))
+		{
+			out_bool = true;
+			break;
+		}
+	}
+}
+
+float UC_General_Fuction::high_performance_AI_standby_CROWS_rotate(int total_index, int now_index, int stop_duration, float rotate_speed)
+{
+	int tp_division = (total_index - stop_duration * 2) / 4;
+	if (now_index < tp_division)
+	{
+		return rotate_speed;
+	}
+	else if (now_index < tp_division + stop_duration)
+	{
+		return 0;
+	}
+	else if (now_index < total_index - tp_division - stop_duration)
+	{
+		return -rotate_speed;
+	}
+	else if (now_index < total_index - tp_division)
+	{
+		return 0;
+	}
+	else
+	{
+		return rotate_speed;
+	}
 }
