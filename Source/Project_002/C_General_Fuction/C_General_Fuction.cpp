@@ -4,7 +4,7 @@
 #include "C_General_Fuction.h"
 #include <string>
 #include "Kismet/KismetStringLibrary.h"
-#include "..\..\..\..\UE4\UE_4.24\Engine\Source\Runtime\CoreUObject\Public\UObject\ConstructorHelpers.h"
+#include "Runtime\CoreUObject\Public\UObject\ConstructorHelpers.h"
 
 /*UC_General_Fuction::UC_General_Fuction()
 {
