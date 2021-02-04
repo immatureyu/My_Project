@@ -6,12 +6,6 @@
 #include "Kismet/KismetStringLibrary.h"
 #include "Runtime\CoreUObject\Public\UObject\ConstructorHelpers.h"
 
-/*UC_General_Fuction::UC_General_Fuction()
-{
-	static ConstructorHelpers::FClassFinder<APawn> Super_Unit(TEXT("Blueprint'/Game/Class/Vehicle/SuperClass/Super_Unit.Super_Unit_C'"));
-	static ConstructorHelpers::FClassFinder<APawn> Super_vehicle(TEXT("Blueprint'/Game/Class/Vehicle/SuperClass/Super_vehicle.Super_vehicle'"));
-}*/
-
 float UC_General_Fuction::KE_health_cal(float KE, int32 range, float distance, int attack_location,
 	int ERA_strengh, TArray<int> self_ERA_list, TArray<int> self_Armor_list, float ERA_revise)
 {
